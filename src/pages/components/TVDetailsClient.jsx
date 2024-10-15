@@ -16,6 +16,11 @@ function DetailsTV({id}){
     useEffect(() =>{
         async function getDetails(id){
             const results = await getTVDetails(id)
+            const release = results.first_air_date.split('-')
+            results.month = parseInt(release[1])
+            results.day = parseInt(release[2])
+            results.year = parseInt(release[0])
+
             setDetails(results)
         }
         getDetails(id)
@@ -27,8 +32,7 @@ function DetailsTV({id}){
     if(loading){
         return <p>Loading...</p>
     }else{
-        const {name, first_air_date, number_of_seasons, homepage, genres, overview, poster_path, tagline, number_of_episodes, credits, videos} = details
-        const release = first_air_date.split('-')
+        const {name, first_air_date, number_of_seasons, homepage, genres, overview, poster_path, tagline, number_of_episodes, credits, month, day, year, videos} = details
         // const release = first_air_date
         const genreElements = genres.map((genre)=>{
             return(
@@ -40,7 +44,7 @@ function DetailsTV({id}){
                 <h1 className="text-5xl w-full font-bold p-3 pb-1">{name}</h1>
                 <h3 className="w-full px-3">{tagline}</h3>
                 <h4 className="font-light text-sm p-2 w-full text-gray-400">Seasons: {number_of_seasons} | Episodes: {number_of_episodes}</h4>
-                <h4 className="font-light text-sm p-2 w-full text-gray-400">First Air Date: {parseInt(release[1])}/{parseInt(release[2])}/{release[0]}</h4>
+                <h4 className="font-light text-sm p-2 w-full text-gray-400">First Air Date: {month}/{day}/{year}</h4>
                 <div className="flex justify-center">
                     <img className="w-80" src={`https://image.tmdb.org/t/p/w342${poster_path}`}/>
                 </div>
