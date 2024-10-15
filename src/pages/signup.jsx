@@ -2,20 +2,20 @@ import { useState } from "react"
 import { Box, Heading, Text, FormControl, FormLabel, Input, Button } from "@chakra-ui/react"
 import { createClient } from '../../utils/supabase/component'
 import Link from "next/link"
-import { useRouter } from "next/router"
 
 
-function Login({setToken}) {
+function signup() {
     const supabase = createClient()
-    const router = useRouter()
 
-    const [loginData, setLoginData] = useState({
+    const [signupData, setSignupData] = useState({
+        firstName:'',
+        lastName:'',
         email:'',
         password:'',
     })
 
     function handleChange(event){
-        setLoginData(details => {
+        setSignupData(details => {
             return{
             ...details,
             [event.target.name] : event.target.value
@@ -25,18 +25,21 @@ function Login({setToken}) {
 
     async function handleSignup(event){
         try{
-            const { data, error } = await supabase.auth.signInWithPassword(
+            const { data, error } = await supabase.auth.signUp(
                 {
-                  email: loginData.email,
-                  password: loginData.password,
+                  email: signupData.email,
+                  password: signupData.password,
+                  options: {
+                    data: {
+                      first_name: signupData.firstName,
+                      last_name: signupData.lastName
+                    }
+                  }
                 }
             )
+            console.log(data)
             if (error) throw error
-            console.log(data)
-            alert("Success! You are now logged in.")
-            setToken(data)
-            console.log(data)
-            router.push('/')
+            alert("Success! Log in to access your account.")
         } catch(error){
             alert(error)
         }
@@ -51,7 +54,7 @@ function Login({setToken}) {
             alignItems="center"
             flexDirection="column"
         >
-        <Heading mb={6}>Log In</Heading>
+        <Heading mb={6}>Sign Up</Heading>
         <Box 
             p={8} 
             borderWidth={1} 
@@ -62,13 +65,33 @@ function Login({setToken}) {
             color="black"
         >
             {/* {error && <Text color="red.500" mb={4}>{error}</Text>} */}
+            <FormControl id="fistName" mb={4} isRequired>
+                <FormLabel>First Name</FormLabel>
+                <Input
+                    type="text"
+                    name="firstName"
+                    placeholder="Enter your first name"
+                    value={signupData.firstName}
+                    onChange={handleChange}
+                />
+            </FormControl>
+            <FormControl id="lastName" mb={4} isRequired>
+                <FormLabel>Last Name</FormLabel>
+                <Input
+                    type="text"
+                    name="lastName"
+                    placeholder="Enter your last name"
+                    value={signupData.lastName}
+                    onChange={handleChange}
+                />
+            </FormControl>
             <FormControl id="email" mb={4} isRequired>
                 <FormLabel>Email</FormLabel>
                 <Input
                     type="email"
                     name="email"
                     placeholder="Enter your email"
-                    value={loginData.email}
+                    value={signupData.email}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -78,7 +101,7 @@ function Login({setToken}) {
                     type="password"
                     name="password"
                     placeholder="Enter your password"
-                    value={loginData.password}
+                    value={signupData.password}
                     onChange={handleChange}
                 />
             </FormControl>
@@ -87,25 +110,25 @@ function Login({setToken}) {
                 width="full" 
                 onClick={handleSignup}
             >
-                Log In
+                Sign Up
             </Button>
         </Box>
         <Text>
-            Don't have an account?
+            Already have an account?
         </Text>
         <Link
-            href={'/signup'}
+            href={'/login'}
         >
             <Button
                 colorScheme="orange"
                 size= 'sm'
                 variant={'outline'}
             >
-                Sign Up
+                Log In
             </Button>
         </Link>
     </Box>
     )
 }
 
-export default Login
+export default signup

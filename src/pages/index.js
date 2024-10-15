@@ -2,27 +2,11 @@ import MovieCard from "./components/MovieCard"
 import Carousel from "./components/Carousel"
 import { getTrendingMovies, getTrendingShows } from "../../utils/movieapifunctions"
 import { useEffect, useState } from "react"
+import { Heading } from "@chakra-ui/react"
 
-export default function Home() {
+export default function Home({token}) {
 
-  // const options = {
-  //   next: {revalidate: 86400},
-  //   method: 'GET',
-  //   headers: {
-  //       accept: 'application/json',
-  //       Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_KEY}`
-  //   }
-  // }
-
-  // async function getTrendingMovies(){
-  //   const res = await fetch('https://api.themoviedb.org/3/trending/movie/day', options)
-  //   return res.json()
-  // }
-
-  // async function getTrendingShows(){
-  //   const res = await fetch('https://api.themoviedb.org/3/trending/tv/day', options)
-  //   return res.json()
-  // }
+  console.log(token)
 
   const [trendingMovies, setTrendingMovies] = useState({results:[]})
   const [trendingShows, setTrendingShows] = useState({results:[]})
@@ -58,6 +42,7 @@ export default function Home() {
 
   return (
     <div>
+      {token? <Heading color={'red'}>Welcome {token.user.user_metadata.first_name}</Heading>:null}
       <h2 className="my-4 text-xl font-bold">Trending Movies:</h2>
       <Carousel cards={trendingMovieCards}/>
       <h2 className="my-4 text-xl font-bold">Trending Shows:</h2>
